@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroGram - El Crucigrama de Neuroeducación</title>
+    <style>
+        /* --- ESTILOS CSS --- */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        h1 {
+            color: #0056b3;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+
+        /* ESTILO DEL CRUCIGRAMA */
+        #crucigrama-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: repeat(12, 1fr);
+            gap: 1px;
+            border: 2px solid #0056b3;
+            max-width: 450px;
+            width: 100%;
+            aspect-ratio: 1 / 1; /* Para mantenerlo cuadrado */
+        }
+
+        .casilla {
+            background-color: #e9ecef;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-transform: uppercase;
+            color: #0056b3;
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+
+        .input-casilla {
+            background-color: #fff;
+            border: 1px solid #0056b3;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-transform: uppercase;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+
+        .numero-pista {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            font-size: 0.6em;
+            color: #dc3545;
+            font-weight: bold;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 1px 3px;
+            border-radius: 3px;
+        }
+
+        .casilla-activa {
+            position: relative;
+        }
+
+        /* --- ESTILOS DE LAS PISTAS Y FORMULARIO --- */
+        .pistas-container {
+            flex-grow: 1;
+            min-width: 350px;
+        }
+
+        h2 {
+            color: #28a745;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 5px;
+            margin-top: 0;
+        }
+
+        .pista {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pista strong {
+            color: #dc3545;
+            font-size: 1.2em;
+        }
+
+        .pista input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 150px;
+            text-transform: uppercase;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .button-check {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .button-check:hover {
+            background-color: #0056b3;
+        }
+
+        #resultado {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.3em;
+            padding: 10px;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        .resultado-correcto {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .resultado-incorrecto {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 NeuroGram - El Crucigrama que Despierta tu Cerebro</h1>
+
+        <div id="crucigrama-grid">
+            </div>
+
+        <div class="pistas-container">
+            <h2>Pistas (Neuroeducación)</h2>
+
+            <h3>Horizontal:</h3>
+            <div class="pista">
+                <strong>1.</strong> Es el órgano que aprende.
+                <input type="text" id="resp-1" maxlength="7" data-orientacion="H" placeholder="7 Letras">
+            </div>
+            <div class="pista">
+                <strong>3.</strong> Célula principal del sistema nervioso, transmite información.
+                <input type="text" id="resp-3" maxlength="7" data-orientacion="H" placeholder="7 Letras">
+            </div>
+            <div class="pista">
+                <strong>5.</strong> Lo que el cerebro necesita para fijar el aprendizaje.
+                <input type="text" id="resp-5" maxlength="5" data-orientacion="H" placeholder="5 Letras">
+            </div>
+
+            <h3>Vertical:</h3>
+            <div class="pista">
+                <strong>2.</strong> Elemento clave en el aprendizaje que regula las emociones.
+                <input type="text" id="resp-2" maxlength="6" data-orientacion="V" placeholder="6 Letras">
+            </div>
+            <div class="pista">
+                <strong>4.</strong> Capacidad del cerebro para cambiar y adaptarse.
+                <input type="text" id="resp-4" maxlength="11" data-orientacion="V" placeholder="11 Letras">
+            </div>
+
+            <button class="button-check" onclick="verificarRespuestas()">¡Comprobar Respuestas!</button>
+
+            <div id="resultado"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- LÓGICA JAVASCRIPT ---
+
+        const gridContainer = document.getElementById('crucigrama-grid');
+        const resultadoDiv = document.getElementById('resultado');
+        const gridSize = 12; // Cuadrícula de 12x12
+
+        // Definición del crucigrama (FILA, COLUMNA, RESPUESTA, ORIENTACIÓN, NÚMERO DE PISTA)
+        const palabras = [
+            // 1. CEREBRO (H: Fila 1, Columna 1)
+            { inicio: [1, 1], palabra: "CEREBRO", orientacion: "H", num: 1 },
+            // 3. NEURONA (H: Fila 3, Columna 3)
+            { inicio: [3, 3], palabra: "NEURONA", orientacion: "H", num: 3 },
+            // 5. SUEÑO (H: Fila 7, Columna 1)
+            { inicio: [7, 1], palabra: "SUEÑO", orientacion: "H", num: 5 },
+            // 2. ESTRES (V: Fila 1, Columna 5) - Intersecta con CEREBRO (E) y NEURONA (R)
+            { inicio: [1, 5], palabra: "ESTRES", orientacion: "V", num: 2 },
+            // 4. PLASTICIDAD (V: Fila 3, Columna 7) - Intersecta con NEURONA (I) y SUEÑO (D - No, vamos a ajustarlo)
+            // Ajustamos las intersecciones para la palabra PLASTICIDAD: NEURONA(I), ESTRÉS (T - No, ajustamos)
+            // La "I" de NEURONA es en (3, 7).
+            { inicio: [3, 7], palabra: "PLASTICIDAD", orientacion: "V", num: 4 }
+        ];
+
+        // Mapeo de la cuadrícula: [fila][columna] = { letra, numPista }
+        let gridMap = Array(gridSize).fill(0).map(() => Array(gridSize).fill(null));
+
+        /**
+         * 1. Inicializa la cuadrícula de datos con las palabras.
+         */
+        function inicializarGridMap() {
+            palabras.forEach(p => {
+                let [r, c] = p.inicio;
+                for (let i = 0; i < p.palabra.length; i++) {
+                    const letra = p.palabra[i];
+                    const numPista = (i === 0) ? p.num : null; // Solo el primer carácter lleva el número
+
+                    // Si la casilla ya tiene una letra, solo añade el número si es el inicio de una nueva palabra.
+                    if (!gridMap[r] || !gridMap[r][c]) {
+                        gridMap[r][c] = { letra: letra, numPista: numPista, inputId: `casilla-${r}-${c}` };
+                    } else if (numPista !== null) {
+                        // Si ya tiene letra pero es el inicio de una nueva, guarda el número.
+                        gridMap[r][c].numPista = numPista;
+                    }
+
+                    // Avanzar según la orientación
+                    if (p.orientacion === "H") c++;
+                    else r++;
+                }
+            });
+        }
+
+        /**
+         * 2. Dibuja el HTML de la cuadrícula basándose en el gridMap.
+         */
+        function dibujarCrucigrama() {
+            gridContainer.innerHTML = '';
+            for (let r = 0; r < gridSize; r++) {
+                for (let c = 0; c < gridSize; c++) {
+                    const data = gridMap[r][c];
+                    const casillaDiv = document.createElement('div');
+                    casillaDiv.className = 'casilla';
+
+                    if (data) {
+                        // Es una casilla activa con una letra
+                        casillaDiv.classList.add('casilla-activa');
+
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.id = data.inputId;
+                        input.maxLength = 1;
+                        input.className = 'input-casilla';
+
+                        casillaDiv.appendChild(input);
+
+                        // Si es el inicio de una palabra, añade el número de pista
+                        if (data.numPista !== null) {
+                            const numSpan = document.createElement('span');
+                            numSpan.className = 'numero-pista';
+                            numSpan.textContent = data.numPista;
+                            casillaDiv.appendChild(numSpan);
+                        }
+                    } else {
+                        // Casilla vacía (fondo más oscuro)
+                        casillaDiv.style.backgroundColor = '#343a40';
+                        casillaDiv.style.border = '1px solid #111';
+                    }
+                    gridContainer.appendChild(casillaDiv);
+                }
+            }
+        }
+
+        /**
+         * 3. Rellena el crucigrama con las respuestas del formulario.
+         */
+        function rellenarGridDesdeForm() {
+            palabras.forEach(p => {
+                const inputForm = document.getElementById(`resp-${p.num}`);
+                if (!inputForm) return;
+
+                const respuesta = inputForm.value.toUpperCase().trim();
+                let [r, c] = p.inicio;
+
+                for (let i = 0; i < p.palabra.length; i++) {
+                    const inputGrid = document.getElementById(`casilla-${r}-${c}`);
+                    if (inputGrid) {
+                        inputGrid.value = respuesta[i] || ''; // Rellena la letra o vacía si no hay
+                    }
+
+                    // Avanzar
+                    if (p.orientacion === "H") c++;
+                    else r++;
+                }
+            });
+        }
+
+        /**
+         * 4. Verifica las respuestas.
+         */
+        window.verificarRespuestas = function() {
+            let correctas = 0;
+            let total = palabras.length;
+            let mensaje = "";
+
+            rellenarGridDesdeForm(); // Primero actualiza el crucigrama
+
+            palabras.forEach(p => {
+                const inputForm = document.getElementById(`resp-${p.num}`);
+                if (!inputForm) return;
+
+                const respuestaUsuario = inputForm.value.toUpperCase().trim();
+                const respuestaCorrecta = p.palabra;
+
+                if (respuestaUsuario === respuestaCorrecta) {
+                    correctas++;
+                    inputForm.style.backgroundColor = '#d4edda'; // Verde claro
+                } else {
+                    inputForm.style.backgroundColor = '#f8d7da'; // Rojo claro
+                }
+            });
+
+            if (correctas === total) {
+                mensaje = `🎉 ¡Felicidades! ¡Has completado el NeuroGram! ${correctas}/${total} respuestas correctas. ¡Eres un Cerebro Brillante!`;
+                resultadoDiv.className = 'resultado-correcto';
+            } else {
+                mensaje = `¡Sigue intentándolo! Tienes ${correctas} de ${total} respuestas correctas. ¡El cerebro ama los retos!`;
+                resultadoDiv.className = 'resultado-incorrecto';
+            }
+
+            resultadoDiv.textContent = mensaje;
+            resultadoDiv.style.display = 'block';
+        }
+
+
+        // INICIO DEL JUEGO
+        document.addEventListener('DOMContentLoaded', () => {
+            inicializarGridMap();
+            dibujarCrucigrama();
+
+            // Sincronizar inputs del grid con los inputs del formulario
+            document.querySelectorAll('.input-casilla').forEach(inputGrid => {
+                inputGrid.addEventListener('input', (e) => {
+                    e.target.value = e.target.value.toUpperCase(); // Forzar mayúsculas
+                });
+            });
+
+            // Sincronizar inputs del formulario con los inputs del grid (para dinamismo)
+            document.querySelectorAll('.pista input[type="text"]').forEach(inputForm => {
+                inputForm.addEventListener('input', (e) => {
+                    e.target.value = e.target.value.toUpperCase(); // Forzar mayúsculas
+                    rellenarGridDesdeForm();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
